@@ -113,6 +113,8 @@ Phew, that's a lot of code that doesn't even work!
 
 ## Enter BOSL2
 
+![](https://raw.githubusercontent.com/BelfrySCAD/BOSL2/master/images/BOSL2logo.png)
+
 [Belfry OpenSCAD Library v2](https://github.com/BelfrySCAD/BOSL2) extends OpenSCAD with:
 
 - Rounding and filleting
@@ -161,11 +163,38 @@ I mean, I use it more indirectly now, which we'll go over later
 
 [SolidPython](https://github.com/jeff-dh/SolidPython) is a Python frontend for solid modelling that compiles to OpenSCAD.
 
+- **More intuitive** - for me at least, since I'm a Python programmer anyway
+- **Integrates BOSL2 and other OpenSCAD libraries**
+- **Object-oriented** - can easily copy and modify objects instead of writing lots of code
+- **Can integrate other Python libraries** - e.g. I used to print datestamps into prototypes to keep track of what's what
+- **Can export directly to STL** - saves a step
+
+But:
+
+- **Docs aren't great** - I often refer to BOSL2 wiki and adapt from there. Even so...
+- **I still don't know how to do some stuff** - aligning objects is beyond me
+- **May generate verbose OpenSCAD files**
+
 > [!TIP]
 > Be sure to get **SolidPython2** (not `master` branch)
 
 ![](./images/simple-rounded-bosl.png)
 
 ```python
+from solid2.extensions.bosl2 import cuboid, ycyl, TOP
+from solid2 import set_global_fn
 
+set_global_fn(100)
+
+cube_size = 20
+hole_diameter = 7
+rounding = 3
+
+cube = cuboid(cube_size, rounding=rounding, edges=TOP)
+hole = ycyl(d=hole_diameter, l=cube_size).right(5).up(3)
+
+model = cube - hole
+
+model.save_as_scad("model.scad")
+model.save_as_stl("model.stl")
 ```
