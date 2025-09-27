@@ -128,7 +128,7 @@ Phew, that's a lot of code that doesn't even work!
 
 ![](./images/simple-rounded/bosl.png)
 
-```scad[11, 13-15]
+```scad
 include <BOSL2/std.scad>;
 
 $fn = 100; // global resolution
@@ -153,9 +153,10 @@ difference() {
 
 I mean, I use it more indirectly now, which we'll go over later
 
-- **Limited functionality** - no chamfering, filleting, etc
-- **Unintuitive** - thinking in terms of X/Y/Z axes plus positive/negative movement hurts my brain
+- **Declarative** - not object-oriented. if I want to copy an object I literally have to copy all the code
 - **Verbose** - it's difficult to keep track of where I am in the file since there's so much stuff
+- **Can't integrate with other stuff** - even with BOSL and other libraries, it can only go so far
+- **I speak Python** - Something Python-based would just be easier
 
 ---
 
@@ -164,7 +165,7 @@ I mean, I use it more indirectly now, which we'll go over later
 [SolidPython](https://github.com/jeff-dh/SolidPython) is a Python frontend for solid modelling that compiles to OpenSCAD.
 
 - **More intuitive** - for me at least, since I'm a Python programmer anyway
-- **Integrates BOSL2 and other OpenSCAD libraries**
+- **Integrates BOSL2 and other OpenSCAD libraries** - so we lose nothing in the transition
 - **Object-oriented** - can easily copy and modify objects instead of writing lots of code
 - **Can integrate other Python libraries** - e.g. I used to print datestamps into prototypes to keep track of what's what
 - **Can export directly to STL** - saves a step
@@ -178,7 +179,7 @@ But:
 > [!TIP]
 > Be sure to get **SolidPython2** (not `master` branch)
 
-![](./images/simple-rounded-bosl.png)
+![](./images/simple-rounded/bosl.png)
 
 ```python
 from solid2.extensions.bosl2 import cuboid, ycyl, TOP
@@ -198,3 +199,69 @@ model = cube - hole
 model.save_as_scad("model.scad")
 model.save_as_stl("model.stl")
 ```
+
+---
+
+## A real project: My butterfly's body
+
+![](./images/body/body.png)
+
+- Lots of precise geometry
+- A lot of object duplication
+- Fixed anchor point (thanks BOSL2!)
+
+Would be a nightmare for me to make in OpenSCAD directly, even with BOSL2
+
+[Python code here](./examples/body/body.py)
+
+---
+
+## Can we use an LLM to create 3D models?
+
+- As we've seen, ChatGPT struggles with spatial awareness - a common failing of LLMs
+- Even so, let's ask it to `create a coffee cup in OpenSCAD`
+
+![](./images/cup/fail-1.png)
+
+Let's try again...
+
+![](./images/cup/fail-2.png)
+
+OK, but maybe let's try with SolidPython: `research the solidpython2 library and create a coffee cup`
+
+![](./images/cup/fail-3.png)
+
+Even after searching and reading the docs, it fails at the first hurdle.
+
+So, in short, **no**, we can't use LLMs (in my experience) to generate even simple 3D models.
+
+---
+
+## Tips
+
+### General
+
+- Use proper editor on right side of screen, OpenSCAD preview on left
+- Use [OpenSCAD development snapshot](https://openscad.org/downloads.html#snapshots) - much much faster rendering, more features
+
+### BOSL2
+
+- Take time to read the wiki, not just for if you need specific help - that let me know the power behind the library
+- `teardrop()` is fantastic for 3D-printing vertical holes
+- `cyl`, `xcyl`, `ycyl`, etc
+
+### SolidPython
+
+- Don't use `.save_to_stl()` when rapid prototyping - it can take a lot of time and sometimes crash (since your model may have issues)
+- Import `solid2.extensions.bosl2` stuff _after_ importing `solid2` stuff to ensure you're using the BOSL stuff
+- Use `get_name()` (defined in [`helper.py`](./examples/body/helper.py)) to name your output files after your working file
+
+---
+
+## Q + A
+
+---
+
+## Contact me
+
+@alexcg on Matrix
