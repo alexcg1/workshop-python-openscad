@@ -6,6 +6,10 @@ title_text = text(text="Python for 3D Design")
 title_text.save_as_scad("title.scad")
 ```
 
+### Visit this repo
+
+![](./images/qrcode.png)
+
 ---
 
 ## Background
